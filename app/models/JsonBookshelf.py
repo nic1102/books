@@ -39,13 +39,14 @@ class JsonBookshelf(Bookshelf):
         else:
             print(f"Всего книг: {len(self.book_dic)}")
             for key, value in self.book_dic.items():
+                readable_status = "В наличии" if value["status"] else "Выдана"
                 print(
                     f'/////////////////////\n'
                     f'ID: {key}\n'
                     f'TITLE: {value["title"]}\n'
                     f'AUTHOR: {value["author"]}\n'
                     f'YEAR: {value["year"]}\n'
-                    f'STATUS: {value["status"]}\n'
+                    f'STATUS: {readable_status}\n'
                     f'/////////////////////'
                 )
 
