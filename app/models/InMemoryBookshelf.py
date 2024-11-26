@@ -114,13 +114,4 @@ class InMemoryBookshelf(Bookshelf):
 
 
 if __name__ == "__main__":
-    bv = BooksValidator()
-
-    b1 = Book()
-
-    bs = InMemoryBookshelf()
-
-    bs.add(b1)
-    bs.get_all()
-    bs.change_status(input("11111111"))
-    bs.get_all()
+    ...
