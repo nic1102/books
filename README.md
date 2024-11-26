@@ -35,8 +35,9 @@ __3. Запуск приложения:__
 
 # __Архитектура приложения__:
 
+Метод для валидации и установки значений. Иньектируется в процессе рантайма. Все зависимости находятся в модуле app.di
+
 ```python
-#Метод для валидации и установки значений. Иньектируется в процессе рантайма.
     def set_validate_data(self) -> dict:
         print("//Создание новой книги")
         try:
@@ -61,6 +62,103 @@ __3. Запуск приложения:__
             self.data["title"] = title
 ```
 
+Для описания логики разных режимов( InMemory и Json) создан абстрактный класс от которого будут наследоваться и переопределятся соответсвующие методы.
+
+```python
+class Bookshelf(ABC):
+
+    book_dic = {}
+
+    @abstractmethod
+    def add(self, book_to_add: Book):
+        ...
+
+    @abstractmethod
+    def get_all(self):
+        ...
+
+    @abstractmethod
+    def del_by_id(self, book_to_del_id: str):
+        ...
+
+    @abstractmethod
+    def get_by_id(self, book_to_get_id: str):
+        ...
+
+    @abstractmethod
+    def get_by_year(self, book_to_get_year: int):
+        ...
+
+    @abstractmethod
+    def get_by_title(self, book_to_get_title: str):
+        ...
+
+    @abstractmethod
+    def get_by_author(self, book_to_get_title: str):
+        ...
+
+    @abstractmethod
+    def change_status(self, book_to_change_id: str):
+        ...
+
+```
+
+Ошибки обрабатываются в блоках try - except. С выводом соответсвующего сообщения.
+
+```python
+        try:
+            self.book_dic[book_to_change_id]["status"] = not self.book_dic[book_to_change_id]["status"]
+            with open("app/res/data.json", "w") as file:
+                json.dump(self.book_dic, file)
+        except KeyError as ex:
+            print("Книги с таким айди нет")
+```
+
+Генерация айди возложена на uuid, с хорошей уникальностью и скоростью.
+
+```python
+self.id = uuid.uuid4().__str__()
+```
+
+Для удобочитаемого вывода информации переопределен метод __str__().
+
+```python
+    def __str__(self) -> str:
+        readable_status = "В наличии" if self.status else "Выдана"
+        return (
+                f'/////////////////////\n'
+                f'ID: {self.id}\n'
+                f'TITLE: {self.title}\n'
+                f'AUTHOR: {self.author}\n' 
+                f'YEAR: {self.year}\n'
+                f'IS_EXISTS: {readable_status}\n'
+                f'/////////////////////'
+        )
+```
+
+Пример одного из метода для поиска книги по автору.
+
+```python
+    def get_by_author(self, book_to_get_author: str):
+        book_counter = 0
+        for key, value in self.book_dic.items():
+            if value["author"] == book_to_get_author:
+                readable_status = "В наличии" if value["status"] else "Выдана"
+                book_counter += 1
+                print(
+                    f'/////////////////////\n'
+                    f'ID: {key}\n'
+                    f'TITLE: {value["title"]}\n'
+                    f'AUTHOR: {value["author"]}\n'
+                    f'YEAR: {value["year"]}\n'
+                    f'STATUS: {readable_status}\n'
+                    f'/////////////////////'
+                )
+        if book_counter == 0:
+            print("Такого автора нет\n")
+```
+
+# __Контакты и обратная свзяь__:
 
 __Авторы:__ Викторов Никита Андреевич <br />
 __Contacts:__ https://t.me/IAM_A_SERGEON <br />
