@@ -31,6 +31,36 @@ __3. Запуск приложения:__
 Удалить книгу - __delbyid__ <br />
 Изменить статус - __changestatus__ <br />
 
+Также был создан тестовый файл app/res/data.json для проверки работоспособности и функционала приложения. <br />
+
+# __Архитектура приложения__:
+
+```python
+#Метод для валидации и установки значений. Иньектируется в процессе рантайма.
+    def set_validate_data(self) -> dict:
+        print("//Создание новой книги")
+        try:
+            self.__set_validate_title()
+            self.__set_validate_author()
+            self.__set_validate_year()
+        except Exception as ex:
+            print(ex.__str__())
+            return {}
+        return self.data
+```
+
+Также есть вспомогательные методы для валидатора сверху. Один из примеров.
+
+```python
+    def __set_validate_title(self):
+        #Метод для проверки заголовка
+        if not self.for_test:
+            title = input("Введите название книги: ")
+            if len(title) < 0 or len(title) > TITLE_MAX_LEN:
+                raise ValueError("Неверная длина заголовка книги")
+            self.data["title"] = title
+```
+
 
 __Авторы:__ Викторов Никита Андреевич <br />
 __Contacts:__ https://t.me/IAM_A_SERGEON <br />
